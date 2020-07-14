@@ -1,9 +1,19 @@
-// let result = confirm('Are you here?');
-// alert(result);
+'use strict';
 
-const answers = [];
-answers[0] = prompt('What is your name?', '');
-answers[1] = prompt('What is your lastname?', '');
-answers[2] = prompt('How old are you?', '');
-document.write(answers);
-console.log(typeof(answers));
+const numberOfFilms = +prompt('Сколько фильмов вы уже посмотрели?', '');
+const personalMovieDB = {
+    count: numberOfFilms,
+    movies: {},
+    actors: {},
+    genres: [],
+    privat: false
+};
+
+const a = prompt('Один из последних просмотренных фильмов?', ''),
+      b = +prompt('На сколько оцените его?', ''),
+      c = prompt('Один из последних просмотренных фильмов?', ''),
+      d = +prompt('На сколько оцените его?', '');
+
+personalMovieDB.movies[a] = b;
+personalMovieDB.movies[c] = d;
+console.log(personalMovieDB);
