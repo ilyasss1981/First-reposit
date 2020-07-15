@@ -55,7 +55,7 @@ if (personalMovieDB.count < 10) {
 } else if (personalMovieDB.count >= 10 && personalMovieDB.count <= 30) {
     alert('Вы классический зритель');
 } else if (personalMovieDB.count > 30) {
-    alert('Вы киноман!')
+    alert('Вы киноман!');
 } else {
     alert('Произошла ошибка');
 }
