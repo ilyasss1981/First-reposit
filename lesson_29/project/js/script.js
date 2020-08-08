@@ -28,88 +28,69 @@ document.addEventListener('DOMContentLoaded', () => {
     const adv = document.querySelectorAll('.promo__adv img'),
           poster = document.querySelector('.promo__bg'),
           genre = poster.querySelector('.promo__genre'),
-          movieList = document.querySelector('.promo__interactive-list');
-    
-    //----------------------------1-----------------------------
-    adv.forEach(item => {
-        item.remove();
-    });
-    //----------------------------2---------------------------
-    genre.textContent = 'Драма';
-    //----------------------------3----------------------------
-    // poster.style.cssText = 'background: url(img/bg.jpg) center; background-size: 100%'; // вариант 1
-    poster.style.backgroundImage = 'url("img/bg.jpg")';
-    //---------------------------- 4-5 ----------------------------
-    movieList.innerHTML = ''; // очищеаем список фильмов
-    movieDB.movies.sort(); // сортируем массив фильмов
-    movieDB.movies.forEach((film, i) => {
-        movieList.innerHTML += `
-            <li class="promo__interactive-item">${i + 1} ${film}
-                <div class="delete"></div>
-            </li>
-        `;
-    });
-    // movieList.forEach((item, index) => {
-    //     item.innerHTML = movieDB.movies[index];
-    // });
-    
-    //=======================Практика 33 урока===========================================
-    
-    //------------------------------------ 1 ----------------------------------------
-    const submitButton = document.querySelector('button'),
-          filmName = document.querySelector('.adding__input'),
-          favoriteFilm = document.querySelector('[type = "checkbox"]');
-    let deleteFilm = document.querySelectorAll('.delete');
-    
-    function addFilm(e) {
-        e.preventDefault();
-        if (filmName.value != '') {        
-            movieDB.movies.push(filmName.value);
-    
-            movieList.innerHTML = '';
-            movieDB.movies.sort();
-            movieDB.movies.forEach((film, i) => {
-                if (film.length > 21) {
-                    film = film.slice(0, 21) + '...';
-                }
-                movieList.innerHTML += `
-                    <li class="promo__interactive-item">${i + 1} ${film}
-                        <div class="delete"></div>
-                    </li>
-                `;
-            });
-            filmName.value = '';
-    
-            if (favoriteFilm.checked == true) {
-                console.log('Добавляем любимый фильм');
-                favoriteFilm.checked = false;
-            }        
+          movieList = document.querySelector('.promo__interactive-list'),
+          addForm = document.querySelector('form.add'),
+          addInput = addForm.querySelector('.adding__input'),
+          checkbox = addForm.querySelector('[type="checkbox"]');
+
+    addForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        
+        let newFilm = addInput.value;
+        const favorite = checkbox.checked;
+        
+        if (newFilm) {
+            if (newFilm.length > 21) {
+                newFilm = newFilm.slice(0, 21) + '...'; // или   newFilm = `${newfilm.substring(0, 22)}...`;         
+            }
+            if (favorite) {
+                console.log ('Добавлен любимый фильм');
+            }
+            movieDB.movies.push(newFilm);
+            sortArr(movieDB.movies);
+            createMovielist(movieDB.movies, movieList);            
+            addForm.reset(); // или   event.target.reset();
         }
-        deleteFilm = document.querySelectorAll('.delete');
-        console.log(deleteFilm);
-        return movieDB.movies;
-    }
+        
+    });    
     
-    
-    
-    // console.log(deleteFilm);
-    deleteFilm.forEach((film, i) => {
-        film.addEventListener('click', () => {
-            //console.log(i);
-            deleteFilm = document.querySelectorAll('.delete');
-            movieDB.movies.splice(i, 1);
-            movieList.innerHTML = '';
-            movieDB.movies.forEach((film, i) => {
-                movieList.innerHTML += `
-                    <li class="promo__interactive-item">${i + 1} ${film}
-                        <div class="delete"></div>
-                    </li>
-                `;
-            });         
+    const deleteAdv = (arr) => {
+        arr.forEach(item => {
+            item.remove();
         });
-    });
-    
-    submitButton.addEventListener('click', addFilm);
+    };
+
+    const makeChanges = () => {
+        genre.textContent = 'Драма';        
+        poster.style.backgroundImage = 'url("img/bg.jpg")';
+    };
+
+    const sortArr = (arr) => {
+        arr.sort();
+    };
+
+    function createMovielist (films, parent) {
+        parent.innerHTML = ''; // очищеаем список фильмов   
+        sortArr(films);     
+        films.forEach((film, i) => {
+            parent.innerHTML += `
+                <li class="promo__interactive-item">${i + 1} ${film}
+                    <div class="delete"></div>
+                </li>
+            `;
+        });
+        document.querySelectorAll('.delete').forEach((btn, i) => {
+            btn.addEventListener('click', () => {
+                btn.parentElement.remove();
+                movieDB.movies.splice(i, 1);
+                createMovielist(films, parent);
+            });
+            
+        });    
+    }
+    deleteAdv(adv);
+    makeChanges();    
+    createMovielist(movieDB.movies, movieList);    
 });
 
 
